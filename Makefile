@@ -20,7 +20,7 @@ OBJ_MAIN = $(BUILD_DIR)/main.o
 
 NAME = disassemble
 
-NAME_LIB = disassemble.a
+NAME_LIB = libdisassemble.a
 
 all: $(NAME)
 

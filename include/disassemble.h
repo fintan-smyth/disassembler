@@ -84,6 +84,6 @@ void		parse_sib_byte(t_state *state, uint8_t byte);
 uint64_t	parse_imm_value(t_state *state, uint8_t *bytes, uint64_t i);
 void		parse_reg_code(t_state *state, uint8_t byte);
 void		parse_modrm_byte(t_state *state, uint8_t byte, t_optrie **curr_op);
-int	print_disassembly(int fd, uint8_t *data, uint64_t start, uint64_t end);
+int			print_disassembly(int fd, uint8_t *data, uint64_t start, uint64_t end);
 
 #endif
