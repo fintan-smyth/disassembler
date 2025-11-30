@@ -6,7 +6,7 @@
 /*   By: fsmyth <fsmyth@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 14:22:05 by fsmyth            #+#    #+#             */
-/*   Updated: 2025/11/29 00:37:50 by fsmyth           ###   ########.fr       */
+/*   Updated: 2025/11/30 14:36:19 by fsmyth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,32 +66,32 @@ const char	*table_0x83[8] = {
 };
 
 const t_opcode	ops[] = {
-	{ .name = "xor",	.bytes = {0x31},	.n_bytes = 1, .flags = MODRM, .extended = 0 },
-	{ .name = "push",	.bytes = {0x50},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "push",	.bytes = {0x51},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "push",	.bytes = {0x52},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "push",	.bytes = {0x53},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "push",	.bytes = {0x54},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "push",	.bytes = {0x55},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "push",	.bytes = {0x56},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "push",	.bytes = {0x57},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "pop",	.bytes = {0x58},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "pop",	.bytes = {0x59},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "pop",	.bytes = {0x5a},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "pop",	.bytes = {0x5b},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "pop",	.bytes = {0x5c},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "pop",	.bytes = {0x5d},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "pop",	.bytes = {0x5e},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "pop",	.bytes = {0x5f},	.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
-	{ .name = "add",	.bytes = {0x83, 0},	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
-	{ .name = "or",		.bytes = {0x83, 1},	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
-	{ .name = "adc",	.bytes = {0x83, 2},	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
-	{ .name = "sbb",	.bytes = {0x83, 3},	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
-	{ .name = "and",	.bytes = {0x83, 4},	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
-	{ .name = "sub",	.bytes = {0x83, 5},	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
-	{ .name = "xor",	.bytes = {0x83, 6},	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
-	{ .name = "cmp",	.bytes = {0x83, 7},	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
-	{ .name = "mov",	.bytes = {0x89},	.n_bytes = 1, .flags = MODRM, .extended = 0 },
+	{ .name = "xor",	.bytes = { 0x31 },		.n_bytes = 1, .flags = MODRM, .extended = 0 },
+	{ .name = "push",	.bytes = { 0x50 },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "push",	.bytes = { 0x51 },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "push",	.bytes = { 0x52 },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "push",	.bytes = { 0x53 },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "push",	.bytes = { 0x54 },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "push",	.bytes = { 0x55 },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "push",	.bytes = { 0x56 },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "push",	.bytes = { 0x57 },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "pop",	.bytes = { 0x58 },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "pop",	.bytes = { 0x59 },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "pop",	.bytes = { 0x5a },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "pop",	.bytes = { 0x5b },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "pop",	.bytes = { 0x5c },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "pop",	.bytes = { 0x5d },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "pop",	.bytes = { 0x5e },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "pop",	.bytes = { 0x5f },		.n_bytes = 1, .flags = REG_CODE, .extended = 0 },
+	{ .name = "add",	.bytes = { 0x83, 0 },	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
+	{ .name = "or",		.bytes = { 0x83, 1 },	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
+	{ .name = "adc",	.bytes = { 0x83, 2 },	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
+	{ .name = "sbb",	.bytes = { 0x83, 3 },	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
+	{ .name = "and",	.bytes = { 0x83, 4 },	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
+	{ .name = "sub",	.bytes = { 0x83, 5 },	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
+	{ .name = "xor",	.bytes = { 0x83, 6 },	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
+	{ .name = "cmp",	.bytes = { 0x83, 7 },	.n_bytes = 1, .flags = MODRM | IMM_8 | EXTENDED_OP, .extended = 1 },
+	{ .name = "mov",	.bytes = { 0x89 },		.n_bytes = 1, .flags = MODRM, .extended = 0 },
 };
 
 int	is_rex_byte(uint8_t byte)
@@ -246,48 +246,43 @@ void	reset_state(t_state *state)
 	memset(state, 0, sizeof(*state));
 }
 
-int	main(void)
+void	print_disassembly_line(int fd, t_state *state, uint64_t addr)
+{
+	dprintf(fd, "%16zx:\t%s\t%s,%s\n", addr, state->operation, state->operand2, state->operand1);
+}
+
+int	print_disassembly(int fd, uint8_t *data, uint64_t start, uint64_t end)
 {
 	t_state		state = {};
 	t_optrie	*root = calloc(1, sizeof(*root));
 	t_optrie	*curr_op;
 
 	build_optrie(root);
-	uint64_t	i = 0;
+	uint64_t	i = start;
 	uint64_t	instruction_start;
-	uint8_t	bytes[] = {
-		0x31, 0xed,
-		0x49, 0x89, 0xd1,
-		0x5e,
-		0x48, 0x89, 0xe2,
-		0x48, 0x83, 0xe4, 0xf0,
-		0x50,
-		0x54,
-		0x45, 0x31, 0xc0,
-		0x31, 0xc9,
-	};
 
-	while (i < sizeof(bytes))
+	while (i < end)
 	{
 		instruction_start = i;
 		reset_state(&state);
-		i = parse_prefix_bytes(&state, bytes, i);
-		curr_op = optrie_search(root, bytes, &i);
+		i = parse_prefix_bytes(&state, data, i);
+		curr_op = optrie_search(root, data, &i);
 		if (curr_op == NULL)
 			return (printf("op not found\n"), 1);
 
 		state.flags |= curr_op->flags;
 		if (state.flags & REG_CODE)
-			parse_reg_code(&state, bytes[i - 1]);
+			parse_reg_code(&state, data[i - 1]);
 		if (state.flags & MODRM)
-			parse_modrm_byte(&state, bytes[i++], &curr_op);
+			parse_modrm_byte(&state, data[i++], &curr_op);
 		if (state.flags & SIB)
-			parse_sib_byte(&state, bytes[i++]);
+			parse_sib_byte(&state, data[i++]);
 		if (state.flags & IMM_MASK)
-		{
-			i = parse_imm_value(&state, bytes, i);
-		}
+			i = parse_imm_value(&state, data, i);
+
 		state.operation = curr_op->name;
-		printf("%16zx:\t%s\t%s,%s\n", instruction_start + 0x2384, state.operation, state.operand2, state.operand1);
+		print_disassembly_line(fd, &state, instruction_start);
 	}
+
+	return (0);
 }

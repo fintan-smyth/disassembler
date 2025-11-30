@@ -76,4 +76,13 @@ typedef struct s_state
 	};
 }	t_state;
 
+void		build_optrie(t_optrie *root);
+t_optrie	*optrie_search(t_optrie *root, uint8_t *data, uint64_t *iptr);
+void		reset_state(t_state *state);
+uint64_t	parse_prefix_bytes(t_state *state, uint8_t *data, uint64_t i);
+void		parse_sib_byte(t_state *state, uint8_t byte);
+uint64_t	parse_imm_value(t_state *state, uint8_t *bytes, uint64_t i);
+void		parse_reg_code(t_state *state, uint8_t byte);
+void		parse_modrm_byte(t_state *state, uint8_t byte, t_optrie **curr_op);
+
 #endif

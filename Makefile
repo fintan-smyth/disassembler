@@ -13,11 +13,18 @@ BUILD_DIR:= ./build
 
 SRC = $(SRC_DIR)/disassemble.c \
 
+MAIN = $(SRC_DIR)/main.c
+
 OBJ = $(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(SRC:.c=.o))
+OBJ_MAIN = $(BUILD_DIR)/main.o
 
 NAME = disassemble
 
+NAME_LIB = disassemble.a
+
 all: $(NAME)
+
+lib: $(NAME_LIB)
 
 # install: $(NAME)
 # 	@mkdir -p $(CONFIG_DIR)
@@ -25,11 +32,17 @@ all: $(NAME)
 # 	@cp -fr  ./lang $(CONFIG_DIR)
 # 	@cp -vf ./nchex $(BIN_DIR)/yatt
 
-$(NAME): $(BUILD_DIR) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
+$(NAME): $(BUILD_DIR) $(OBJ) $(OBJ_MAIN)
+	$(CC) $(CFLAGS) $(OBJ) $(OBJ_MAIN) -o $(NAME)
+
+$(NAME_LIB): $(BUILD_DIR) $(OBJ)
+	ar rcs $(NAME_LIB) $(OBJ)
 
 $(OBJ): $(BUILD_DIR)%.o: $(SRC_DIR)%.c
 	$(CC) $(CFLAGS) -c $^ -o $@
+
+$(OBJ_MAIN):
+	$(CC) $(CFLAGS) -c $(SRC_DIR)/main.c -o $(BUILD_DIR)/main.o
 
 $(BUILD_DIR):
 	@mkdir -p $@
