@@ -6,7 +6,7 @@
 /*   By: fsmyth <fsmyth@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 14:32:25 by fsmyth            #+#    #+#             */
-/*   Updated: 2025/11/30 20:20:02 by fsmyth           ###   ########.fr       */
+/*   Updated: 2025/12/01 15:55:30 by fsmyth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,16 +62,27 @@ int	main(void)
 	// 	0xbf, 0x06, 0x00, 0x00, 0x00,
 	// 	0x89, 0xbd, 0x2c, 0xfe, 0xff, 0xff,
 	// };
+	// uint64_t	size;
+	// uint8_t		*data = read_input_file("/home/fintan/fortytwo/nchex/nchex", &size);
+	//
+	// printf("START:\n");
+	// print_disassembly(1, data, 0x23c4, 100);
+	//
+	// printf("\nINIT_NCURSES:\n");
+	// print_disassembly(1, data, 0x24b9, 100);
+	//
+	// printf("\nMAIN:\n");
+	// print_disassembly(1, data, 0x26cc, 100);
 
 	uint64_t	size;
-	uint8_t		*data = read_input_file("/home/fintan/fortytwo/nchex/nchex", &size);
+	uint8_t		*data = read_input_file("/home/fsmyth/projects/nchex/nchex", &size);
 
 	printf("START:\n");
-	print_disassembly(1, data, 0x23c4, 100);
+	print_disassembly(1, data, 0x2364, 200);
 
 	printf("\nINIT_NCURSES:\n");
-	print_disassembly(1, data, 0x24b9, 100);
+	print_disassembly(1, data, 0x2450, 100);
 
 	printf("\nMAIN:\n");
-	print_disassembly(1, data, 0x26cc, 100);
+	print_disassembly(1, data, 0x2640, 100);
 }

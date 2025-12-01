@@ -6,7 +6,7 @@
 /*   By: fsmyth <fsmyth@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 16:47:32 by fsmyth            #+#    #+#             */
-/*   Updated: 2025/11/30 19:54:17 by fsmyth           ###   ########.fr       */
+/*   Updated: 2025/12/01 15:59:00 by fsmyth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,14 @@
 # define DISASSEMBLE_H
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 #define BUF_SIZE 64
 
 # define IMM_MASK (IMM_8 | IMM_16 | IMM_32 | IMM_64)
 # define DISP_MASK (DISP_8 | DISP_16 | DISP_32 | DISP_64)
+# define REL_MASK (REL_8 | REL_16 | REL_32)
 
 enum
 {
@@ -38,7 +40,11 @@ enum
 	DISP_16		= (1 << 12),
 	DISP_32		= (1 << 13),
 	DISP_64		= (1 << 14),
-	REG_CODE	= (1 << 15),
+	REL_8		= (1 << 15),
+	REL_16		= (1 << 16),
+	REL_32		= (1 << 17),
+	REG_CODE	= (1 << 18),
+	FIXED_REG	= (1 << 19),
 };
 
 
@@ -56,6 +62,8 @@ enum
 	OPERAND_R,
 	OPERAND_IMM,
 	OPERAND_REG_CODE,
+	OPERAND_REL,
+	OPERAND_RAX,
 	OPERAND_MAX,
 };
 
@@ -84,7 +92,6 @@ typedef struct s_state
 	uint64_t		flags;
 	t_optrie		*opnode;
 	char			operand_bufs[OPERAND_MAX][BUF_SIZE];
-	uint8_t			op_extension;
 	union {
 		int8_t		imm8;
 		int16_t		imm16;
@@ -109,5 +116,8 @@ uint64_t	parse_imm_value(t_state *state, uint8_t *bytes, uint64_t i);
 void		parse_reg_code(t_state *state, uint8_t byte);
 void		parse_modrm_byte(t_state *state, uint8_t byte);
 int			print_disassembly(int fd, uint8_t *data, uint64_t start, uint64_t end);
+
+// Utils
+size_t	ft_strlcat(char *dst, const char *src, size_t n);
 
 #endif

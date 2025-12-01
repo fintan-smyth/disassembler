@@ -6,7 +6,7 @@
 /*   By: fsmyth <fsmyth@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 18:57:06 by fsmyth            #+#    #+#             */
-/*   Updated: 2025/11/30 19:54:08 by fsmyth           ###   ########.fr       */
+/*   Updated: 2025/12/01 15:04:33 by fsmyth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 const t_opcode	ops[] = {
 	{ .name = "xor",	.bytes = { 0x31 },		.n_bytes = 1, .flags = MODRM,					.n_operands = 2, .op1 = OPERAND_RM, .op2 = OPERAND_R },
+	{ .name = "cmp",	.bytes = { 0x3d },		.n_bytes = 1, .flags = IMM_32,					.n_operands = 2, .op1 = OPERAND_RAX, .op2 = OPERAND_IMM },
 	{ .name = "push",	.bytes = { 0x50 },		.n_bytes = 1, .flags = REG_CODE,				.n_operands = 1, .op1 = OPERAND_REG_CODE, },
 	{ .name = "push",	.bytes = { 0x51 },		.n_bytes = 1, .flags = REG_CODE,				.n_operands = 1, .op1 = OPERAND_REG_CODE, },
 	{ .name = "push",	.bytes = { 0x52 },		.n_bytes = 1, .flags = REG_CODE,				.n_operands = 1, .op1 = OPERAND_REG_CODE, },
@@ -50,6 +51,7 @@ const t_opcode	ops[] = {
 	{ .name = "cmp",	.bytes = { 0x83, 7 },	.n_bytes = 1, .flags = MODRM | IMM_8 | EXT_OP,	.n_operands = 2, .op1 = OPERAND_RM, .op2 = OPERAND_IMM },
 	{ .name = "mov",	.bytes = { 0x89 },		.n_bytes = 1, .flags = MODRM,					.n_operands = 2, .op1 = OPERAND_RM, .op2 = OPERAND_R },
 	{ .name = "lea",	.bytes = { 0x8d },		.n_bytes = 1, .flags = MODRM,					.n_operands = 2, .op1 = OPERAND_R, .op2 = OPERAND_RM },
+	{ .name = "nop",	.bytes = { 0x90 },		.n_bytes = 1, .flags = 0,						.n_operands = 0 },
 	{ .name = "mov",	.bytes = { 0xb0 },		.n_bytes = 1, .flags = REG_CODE | IMM_8,		.n_operands = 2, .op1 = OPERAND_REG_CODE, .op2 = OPERAND_IMM },
 	{ .name = "mov",	.bytes = { 0xb1 },		.n_bytes = 1, .flags = REG_CODE | IMM_8,		.n_operands = 2, .op1 = OPERAND_REG_CODE, .op2 = OPERAND_IMM },
 	{ .name = "mov",	.bytes = { 0xb2 },		.n_bytes = 1, .flags = REG_CODE | IMM_8,		.n_operands = 2, .op1 = OPERAND_REG_CODE, .op2 = OPERAND_IMM },
@@ -66,6 +68,9 @@ const t_opcode	ops[] = {
 	{ .name = "mov",	.bytes = { 0xbd },		.n_bytes = 1, .flags = REG_CODE | IMM_32,		.n_operands = 2, .op1 = OPERAND_REG_CODE, .op2 = OPERAND_IMM },
 	{ .name = "mov",	.bytes = { 0xbe },		.n_bytes = 1, .flags = REG_CODE | IMM_32,		.n_operands = 2, .op1 = OPERAND_REG_CODE, .op2 = OPERAND_IMM },
 	{ .name = "mov",	.bytes = { 0xbf },		.n_bytes = 1, .flags = REG_CODE | IMM_32,		.n_operands = 2, .op1 = OPERAND_REG_CODE, .op2 = OPERAND_IMM },
+	{ .name = "ret",	.bytes = { 0xc3 },		.n_bytes = 1, .flags = 0,						.n_operands = 0 },
+	{ .name = "mov",	.bytes = { 0xc7, 0 },	.n_bytes = 1, .flags = MODRM | EXT_OP | IMM_32,	.n_operands = 2, .op1 = OPERAND_RM, .op2 = OPERAND_IMM },
+	{ .name = "hlt",	.bytes = { 0xf4 },		.n_bytes = 1, .flags = 0,						.n_operands = 0 },
 	{ .name = "inc",	.bytes = { 0xff, 0 },	.n_bytes = 1, .flags = MODRM | EXT_OP,			.n_operands = 1, .op1 = OPERAND_RM },
 	{ .name = "dec",	.bytes = { 0xff, 1 },	.n_bytes = 1, .flags = MODRM | EXT_OP,			.n_operands = 1, .op1 = OPERAND_RM },
 	{ .name = "call",	.bytes = { 0xff, 2 },	.n_bytes = 1, .flags = MODRM | EXT_OP,			.n_operands = 1, .op1 = OPERAND_RM },

@@ -6,7 +6,7 @@
 /*   By: fsmyth <fsmyth@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 14:22:05 by fsmyth            #+#    #+#             */
-/*   Updated: 2025/11/30 20:14:24 by fsmyth           ###   ########.fr       */
+/*   Updated: 2025/12/01 15:57:43 by fsmyth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <wchar.h>
 
 const char	*reg64[16] = {
 	"%rax",
@@ -71,6 +72,8 @@ void	parse_modrm_byte(t_state *state, uint8_t byte)
 	uint8_t		rm = (byte >> 0) & 0b111;
 	const char	*reg_name;
 
+	strncpy(state->operand_bufs[OPERAND_RM], "\e[32m", BUF_SIZE);
+	strncpy(state->operand_bufs[OPERAND_R], "\e[32m", BUF_SIZE);
 	if (state->flags & REX_R)
 		reg |= 0b1000;
 	if (state->flags & REX_B)
@@ -81,7 +84,7 @@ void	parse_modrm_byte(t_state *state, uint8_t byte)
 	else
 	{
 		reg_name = state->flags & REX_W ? reg64[reg] : reg32[reg];
-		strncpy(state->operand_bufs[OPERAND_R], reg_name, BUF_SIZE);
+		ft_strlcat(state->operand_bufs[OPERAND_R], reg_name, BUF_SIZE);
 	}
 
 	switch (mod) {
@@ -90,7 +93,7 @@ void	parse_modrm_byte(t_state *state, uint8_t byte)
 			{
 				// reg_name = state->flags & REX_W ? "(%rip)" : "(%eip)";
 				reg_name = "(%rip)";
-				strncpy(state->operand_bufs[OPERAND_RM], reg_name, BUF_SIZE);
+				ft_strlcat(state->operand_bufs[OPERAND_RM], reg_name, BUF_SIZE);
 				state->flags |= DISP_32;
 			}
 			else if ((rm & 0b111) == 0b100)
@@ -99,9 +102,9 @@ void	parse_modrm_byte(t_state *state, uint8_t byte)
 			{
 				// reg_name = state->flags & REX_W ? reg64[rm] : reg32[rm];
 				reg_name = reg64[rm];
-				strncpy(state->operand_bufs[OPERAND_RM], "(", BUF_SIZE);
-				strlcat(state->operand_bufs[OPERAND_RM], reg_name, BUF_SIZE);
-				strlcat(state->operand_bufs[OPERAND_RM], ")", BUF_SIZE);
+				ft_strlcat(state->operand_bufs[OPERAND_RM], "(", BUF_SIZE);
+				ft_strlcat(state->operand_bufs[OPERAND_RM], reg_name, BUF_SIZE);
+				ft_strlcat(state->operand_bufs[OPERAND_RM], ")", BUF_SIZE);
 			}
 			break ;
 		case (0b01):
@@ -111,9 +114,9 @@ void	parse_modrm_byte(t_state *state, uint8_t byte)
 			{
 				// reg_name = state->flags & REX_W ? reg64[rm] : reg32[rm];
 				reg_name = reg64[rm];
-				strncpy(state->operand_bufs[OPERAND_RM], "(", BUF_SIZE);
-				strlcat(state->operand_bufs[OPERAND_RM], reg_name, BUF_SIZE);
-				strlcat(state->operand_bufs[OPERAND_RM], ")", BUF_SIZE);
+				ft_strlcat(state->operand_bufs[OPERAND_RM], "(", BUF_SIZE);
+				ft_strlcat(state->operand_bufs[OPERAND_RM], reg_name, BUF_SIZE);
+				ft_strlcat(state->operand_bufs[OPERAND_RM], ")", BUF_SIZE);
 			}
 			state->flags |= DISP_8;
 			break ;
@@ -124,15 +127,15 @@ void	parse_modrm_byte(t_state *state, uint8_t byte)
 			{
 				// reg_name = state->flags & REX_W ? reg64[rm] : reg32[rm];
 				reg_name = reg64[rm];
-				strncpy(state->operand_bufs[OPERAND_RM], "(", BUF_SIZE);
-				strlcat(state->operand_bufs[OPERAND_RM], reg_name, BUF_SIZE);
-				strlcat(state->operand_bufs[OPERAND_RM], ")", BUF_SIZE);
+				ft_strlcat(state->operand_bufs[OPERAND_RM], "(", BUF_SIZE);
+				ft_strlcat(state->operand_bufs[OPERAND_RM], reg_name, BUF_SIZE);
+				ft_strlcat(state->operand_bufs[OPERAND_RM], ")", BUF_SIZE);
 			}
 			state->flags |= DISP_32;
 			break ;
 		case (0b11):
 			reg_name = state->flags & REX_W ? reg64[rm] : reg32[rm];
-			strncpy(state->operand_bufs[OPERAND_RM], reg_name, BUF_SIZE);
+			ft_strlcat(state->operand_bufs[OPERAND_RM], reg_name, BUF_SIZE);
 			break ;
 	}
 }
@@ -142,7 +145,8 @@ void	parse_reg_code(t_state *state, uint8_t byte)
 	uint8_t		rm = byte & 0b111;
 	const char	**regs = state->flags & REX_W ? reg64 : reg32;
 
-	strncpy(state->operand_bufs[OPERAND_REG_CODE], regs[rm], BUF_SIZE);
+	strncpy(state->operand_bufs[OPERAND_REG_CODE], "\e[32m", BUF_SIZE);
+	ft_strlcat(state->operand_bufs[OPERAND_REG_CODE], regs[rm], BUF_SIZE);
 }
 
 void	prefix_str(char *dst, const char *src, uint64_t bufsize)
@@ -151,7 +155,7 @@ void	prefix_str(char *dst, const char *src, uint64_t bufsize)
 
 	strncpy(tmp, dst, BUF_SIZE);
 	strncpy(dst, src, bufsize);
-	strlcat(dst, tmp, bufsize);
+	ft_strlcat(dst, tmp, bufsize);
 }
 
 uint64_t	parse_disp_value(t_state *state, uint8_t *bytes, uint64_t i)
@@ -208,8 +212,11 @@ uint64_t	parse_disp_value(t_state *state, uint8_t *bytes, uint64_t i)
 	prefix_str(state->operand_bufs[OPERAND_RM], buf, BUF_SIZE);
 	if (negative)
 		prefix_str(state->operand_bufs[OPERAND_RM], "-", BUF_SIZE);
+	prefix_str(state->operand_bufs[OPERAND_RM], "\e[34m", BUF_SIZE);
 	return (i);
 }
+
+
 
 uint64_t	parse_imm_value(t_state *state, uint8_t *bytes, uint64_t i)
 {
@@ -218,22 +225,22 @@ uint64_t	parse_imm_value(t_state *state, uint8_t *bytes, uint64_t i)
 	switch (imm_size) {
 		case (1):
 			state->imm8 = *(int8_t *)&bytes[i];
-			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "$%#02x", state->imm8);
+			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "\e[31m$0x%02x", state->imm8);
 			i++;
 			break ;
 		case (2):
 			state->imm16 = *(int16_t *)&bytes[i];
-			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "$%#02x", state->imm16);
+			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "\e[31m$0x%02x", state->imm16);
 			i += 2;
 			break ;
 		case (4):
 			state->imm32 = *(int32_t *)&bytes[i];
-			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "$%#02x", state->imm32);
+			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "\e[31m$0x%02x", state->imm32);
 			i += 4;
 			break ;
 		case (8):
 			state->imm64 = *(int64_t *)&bytes[i];
-			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "$%#02zx", state->imm64);
+			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "\e[31m$0x%02zx", state->imm64);
 			i += 8;
 			break ;
 		default:
@@ -257,9 +264,15 @@ uint64_t	parse_prefix_bytes(t_state *state, uint8_t *data, uint64_t i)
 	return (i);
 }
 
+void	setup_fixed_registers(t_state *state)
+{
+	strncpy(state->operand_bufs[OPERAND_RAX], "\e[32m%rax", BUF_SIZE);
+}
+
 void	reset_state(t_state *state)
 {
-	memset(state, 0, sizeof(*state));
+	state->flags = 0;
+	state->opnode = NULL;
 }
 
 void	print_disassembly_line(int fd, t_state *state, uint64_t addr)
@@ -271,22 +284,22 @@ void	print_disassembly_line(int fd, t_state *state, uint64_t addr)
 
 	switch (op->n_operands) {
 		case (0):
-			dprintf(fd, "%16zx:\t%s\n", addr, op->name);
+			dprintf(fd, "%16zx:\t\e[35m%s\n\e[m", addr, op->name);
 			break ;
 		case (1):
 			dst = state->operand_bufs[op->op1];
-			dprintf(fd, "%16zx:\t%s\t%s\n", addr, op->name, dst);
+			dprintf(fd, "%16zx:\t\e[35m%s\t%s\n\e[m", addr, op->name, dst);
 			break ;
 		case (2):
 			dst = state->operand_bufs[op->op1];
 			src = state->operand_bufs[op->op2];
-			dprintf(fd, "%16zx:\t%s\t%s,%s\n", addr, op->name, src, dst);
+			dprintf(fd, "%16zx:\t\e[35m%s\t%s\e[m,%s\n\e[m", addr, op->name, src, dst);
 			break ;
 		case (3):
 			dst = state->operand_bufs[op->op1];
 			src = state->operand_bufs[op->op2];
 			src2 = state->operand_bufs[op->op3];
-			dprintf(fd, "%16zx:\t%s\t%s,%s,%s\n", addr, op->name, src, src2, dst);
+			dprintf(fd, "%16zx:\t\e[35m%s\t%s,\e[m%s,\e[m%s\n\e[m", addr, op->name, src, src2, dst);
 			break ;
 		default:
 			dprintf(3, "Error!\n");
@@ -300,6 +313,8 @@ int	print_disassembly(int fd, uint8_t *data, uint64_t start, uint64_t size)
 	t_optrie	*root = calloc(1, sizeof(*root));
 
 	build_optrie(root);
+	setup_fixed_registers(&state);
+
 	uint64_t	i = start;
 	uint64_t	end = start + size;
 	uint64_t	instruction_start;
@@ -311,7 +326,12 @@ int	print_disassembly(int fd, uint8_t *data, uint64_t start, uint64_t size)
 		i = parse_prefix_bytes(&state, data, i);
 		state.opnode = optrie_search(root, data, &i);
 		if (state.opnode == NULL)
-			return (printf("op not found\n"), 1);
+		{
+			printf("op not found\n");
+			i = instruction_start + 1;
+			continue ;
+			// return (1);
+		}
 
 		state.flags |= state.opnode->flags;
 		if (state.flags & REG_CODE)

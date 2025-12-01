@@ -13,6 +13,7 @@ BUILD_DIR:= ./build
 
 SRC = $(SRC_DIR)/disassemble.c \
 	  $(SRC_DIR)/opcodes.c \
+	  $(SRC_DIR)/utils.c \
 
 MAIN = $(SRC_DIR)/main.c
 
