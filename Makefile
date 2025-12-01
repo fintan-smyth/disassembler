@@ -12,6 +12,7 @@ BUILD_DIR:= ./build
 # BIN_DIR:= ${HOME}/.local/bin
 
 SRC = $(SRC_DIR)/disassemble.c \
+	  $(SRC_DIR)/opcodes.c \
 
 MAIN = $(SRC_DIR)/main.c
 
@@ -33,16 +34,16 @@ lib: $(NAME_LIB)
 # 	@cp -vf ./nchex $(BIN_DIR)/yatt
 
 $(NAME): $(BUILD_DIR) $(OBJ) $(OBJ_MAIN)
-	$(CC) $(CFLAGS) $(OBJ) $(OBJ_MAIN) -o $(NAME)
+	$(CC) $(CFLAGS) $(DBG_FLAGS) $(OBJ) $(OBJ_MAIN) -o $(NAME)
 
 $(NAME_LIB): $(BUILD_DIR) $(OBJ)
 	ar rcs $(NAME_LIB) $(OBJ)
 
 $(OBJ): $(BUILD_DIR)%.o: $(SRC_DIR)%.c
-	$(CC) $(CFLAGS) -c $^ -o $@
+	$(CC) $(CFLAGS) $(DBG_FLAGS) -c $^ -o $@
 
-$(OBJ_MAIN):
-	$(CC) $(CFLAGS) -c $(SRC_DIR)/main.c -o $(BUILD_DIR)/main.o
+$(OBJ_MAIN): $(MAIN)
+	$(CC) $(CFLAGS) $(DBG_FLAGS) -c $(SRC_DIR)/main.c -o $(BUILD_DIR)/main.o
 
 $(BUILD_DIR):
 	@mkdir -p $@
@@ -51,6 +52,7 @@ clean:
 	rm -rf build/
 
 fclean: clean
+	rm -rf $(NAME_LIB)
 	rm -rf $(NAME)
 
 re: fclean all

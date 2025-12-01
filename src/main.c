@@ -6,55 +6,72 @@
 /*   By: fsmyth <fsmyth@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/30 14:32:25 by fsmyth            #+#    #+#             */
-/*   Updated: 2025/11/30 14:32:57 by fsmyth           ###   ########.fr       */
+/*   Updated: 2025/11/30 20:20:02 by fsmyth           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "disassemble.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+uint8_t	*read_input_file(char *filename, uint64_t *size)
+{
+	struct stat 	statbuf;
+	uint8_t			*data;
+
+	int retval = stat(filename, &statbuf);
+	if (retval != EXIT_SUCCESS)
+		return (perror(filename), NULL);
+
+	*size = statbuf.st_size;
+	data = malloc(*size);
+	if (data == NULL)
+		return (perror("malloc"), NULL);
+
+	int	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+		return (perror(filename), NULL);
+
+	retval = read(fd, data, *size);
+	close(fd);
+	return (data);
+}
 
 int	main(void)
 {
-	t_state		state = {};
-	t_optrie	*root = calloc(1, sizeof(*root));
-	t_optrie	*curr_op;
+	// uint8_t	bytes[] = {
+	// 	0x31, 0xed,
+	// 	0x49, 0x89, 0xd1,
+	// 	0x5e,
+	// 	0x48, 0x89, 0xe2,
+	// 	0x48, 0x83, 0xe4, 0xf0,
+	// 	0x50,
+	// 	0x54,
+	// 	0x45, 0x31, 0xc0,
+	// 	0x31, 0xc9,
+	// 	0x48, 0x8d, 0x3d, 0xed, 0x02, 0x00, 0x00,
+	// 	0xff, 0x15, 0xdb, 0x8b, 0x00, 0x00,
+	// 	0x55,
+	// 	0x48, 0x89, 0xe5,
+	// 	0x48, 0x8d, 0x05, 0x40, 0x5b, 0x00, 0x00,
+	// 	0x48, 0x89, 0xc6,
+	// 	0xbf, 0x06, 0x00, 0x00, 0x00,
+	// 	0x89, 0xbd, 0x2c, 0xfe, 0xff, 0xff,
+	// };
 
-	build_optrie(root);
-	uint64_t	i = 0;
-	uint64_t	instruction_start;
-	uint8_t	bytes[] = {
-		0x31, 0xed,
-		0x49, 0x89, 0xd1,
-		0x5e,
-		0x48, 0x89, 0xe2,
-		0x48, 0x83, 0xe4, 0xf0,
-		0x50,
-		0x54,
-		0x45, 0x31, 0xc0,
-		0x31, 0xc9,
-	};
+	uint64_t	size;
+	uint8_t		*data = read_input_file("/home/fintan/fortytwo/nchex/nchex", &size);
 
-	while (i < sizeof(bytes))
-	{
-		instruction_start = i;
-		reset_state(&state);
-		i = parse_prefix_bytes(&state, bytes, i);
-		curr_op = optrie_search(root, bytes, &i);
-		if (curr_op == NULL)
-			return (printf("op not found\n"), 1);
+	printf("START:\n");
+	print_disassembly(1, data, 0x23c4, 100);
 
-		state.flags |= curr_op->flags;
-		if (state.flags & REG_CODE)
-			parse_reg_code(&state, bytes[i - 1]);
-		if (state.flags & MODRM)
-			parse_modrm_byte(&state, bytes[i++], &curr_op);
-		if (state.flags & SIB)
-			parse_sib_byte(&state, bytes[i++]);
-		if (state.flags & IMM_MASK)
-			i = parse_imm_value(&state, bytes, i);
+	printf("\nINIT_NCURSES:\n");
+	print_disassembly(1, data, 0x24b9, 100);
 
-		state.operation = curr_op->name;
-		printf("%16zx:\t%s\t%s,%s\n", instruction_start + 0x2384, state.operation, state.operand2, state.operand1);
-	}
+	printf("\nMAIN:\n");
+	print_disassembly(1, data, 0x26cc, 100);
 }
