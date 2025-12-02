@@ -360,6 +360,8 @@ uint64_t	parse_prefix_bytes(t_state *state, uint8_t *data, uint64_t i)
 void	setup_fixed_registers(t_state *state)
 {
 	strncpy(state->operand_bufs[OPERAND_RAX], "\e[32m%rax", BUF_SIZE);
+	strncpy(state->operand_bufs[OPERAND_AL], "\e[32m%al", BUF_SIZE);
+	strncpy(state->operand_bufs[OPERAND_ONE], "\e[31m$1", BUF_SIZE);
 }
 
 void	reset_state(t_state *state)
@@ -400,7 +402,7 @@ void	print_disassembly_line(int fd, t_state *state, uint64_t addr)
 	}
 }
 
-int	print_disassembly(int fd, uint8_t *data, uint64_t start, uint64_t size)
+int	print_disassembly(int fd, uint8_t *data, uint64_t start, uint64_t end)
 {
 	t_state		state = {};
 	t_optrie	*root = calloc(1, sizeof(*root));
@@ -409,7 +411,6 @@ int	print_disassembly(int fd, uint8_t *data, uint64_t start, uint64_t size)
 	setup_fixed_registers(&state);
 
 	uint64_t	i = start;
-	uint64_t	end = start + size;
 	uint64_t	instruction_start;
 
 	while (i < end)

@@ -17,7 +17,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#define BUF_SIZE 64
+#define BUF_SIZE 32
 
 # define IMM_MASK (IMM_8 | IMM_16 | IMM_32 | IMM_64)
 # define DISP_MASK (DISP_8 | DISP_16 | DISP_32 | DISP_64)
@@ -67,6 +67,8 @@ enum
 	OPERAND_REG_CODE,
 	OPERAND_REL,
 	OPERAND_RAX,
+	OPERAND_AL,
+	OPERAND_ONE,
 	OPERAND_MAX,
 };
 

@@ -62,30 +62,37 @@ int	main(void)
 	// 	0xbf, 0x06, 0x00, 0x00, 0x00,
 	// 	0x89, 0xbd, 0x2c, 0xfe, 0xff, 0xff,
 	// };
-	// uint64_t	size;
-	// uint8_t		*data = read_input_file("/home/fintan/fortytwo/nchex/nchex", &size);
-	//
-	// printf("START:\n");
-	// print_disassembly(1, data, 0x23c4, 100);
-	//
-	// printf("\nINIT_NCURSES:\n");
-	// print_disassembly(1, data, 0x24b9, 100);
-	//
-	// printf("\nMAIN:\n");
-	// print_disassembly(1, data, 0x26cc, 100);
 
 	uint64_t	size;
-	uint8_t		*data = read_input_file("/home/fsmyth/projects/nchex/nchex", &size);
+	uint8_t		*data = read_input_file("/home/fintan/fortytwo/nchex/nchex", &size);
 
 	printf("START:\n");
-	print_disassembly(1, data, 0x2364, 120);
+	print_disassembly(1, data, 0x23c0, 0x24b9);
 
 	printf("\nINIT_NCURSES:\n");
-	print_disassembly(1, data, 0x2450, 20);
+	print_disassembly(1, data, 0x24b9, 0x2669);
+
+	printf("\nDEINIT_NCURSES:\n");
+	print_disassembly(1, data, 0x2669, 0x267f);
+
+	printf("\ncleanup\n");
+	print_disassembly(1, data, 0x267f, 0x26cc);
 
 	printf("\nMAIN:\n");
-	print_disassembly(1, data, 0x2640, 30);
+	print_disassembly(1, data, 0x26cc, 0x2936);
 
-	printf("\nINIT_BYTECOLS:\n");
-	print_disassembly(1, data, 0x2cd0, 300);
+	// uint64_t	size;
+	// uint8_t		*data = read_input_file("/home/fsmyth/projects/nchex/nchex", &size);
+	//
+	// printf("START:\n");
+	// print_disassembly(1, data, 0x2360, 120);
+	//
+	// printf("\nINIT_NCURSES:\n");
+	// print_disassembly(1, data, 0x2450, 20);
+	//
+	// printf("\nMAIN:\n");
+	// print_disassembly(1, data, 0x2640, 30);
+	//
+	// printf("\nINIT_BYTECOLS:\n");
+	// print_disassembly(1, data, 0x2cd0, 300);
 }
