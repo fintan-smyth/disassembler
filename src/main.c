@@ -78,11 +78,14 @@ int	main(void)
 	uint8_t		*data = read_input_file("/home/fsmyth/projects/nchex/nchex", &size);
 
 	printf("START:\n");
-	print_disassembly(1, data, 0x2364, 200);
+	print_disassembly(1, data, 0x2364, 120);
 
 	printf("\nINIT_NCURSES:\n");
-	print_disassembly(1, data, 0x2450, 100);
+	print_disassembly(1, data, 0x2450, 20);
 
 	printf("\nMAIN:\n");
-	print_disassembly(1, data, 0x2640, 100);
+	print_disassembly(1, data, 0x2640, 30);
+
+	printf("\nINIT_BYTECOLS:\n");
+	print_disassembly(1, data, 0x2cd0, 300);
 }

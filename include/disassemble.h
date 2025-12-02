@@ -22,6 +22,9 @@
 # define IMM_MASK (IMM_8 | IMM_16 | IMM_32 | IMM_64)
 # define DISP_MASK (DISP_8 | DISP_16 | DISP_32 | DISP_64)
 # define REL_MASK (REL_8 | REL_16 | REL_32)
+# define IMM_SHIFT 7
+# define DISP_SHIFT 11
+# define REL_SHIFT 15
 
 enum
 {
@@ -103,6 +106,11 @@ typedef struct s_state
 		int16_t		disp16;
 		int32_t		disp32;
 		int64_t		disp64;
+	};
+	union {
+		int8_t		rel8;
+		int16_t		rel16;
+		int32_t		rel32;
 	};
 }	t_state;
 

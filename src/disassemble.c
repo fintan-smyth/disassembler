@@ -158,9 +158,37 @@ void	prefix_str(char *dst, const char *src, uint64_t bufsize)
 	ft_strlcat(dst, tmp, bufsize);
 }
 
+uint64_t	parse_rel_value(t_state *state, uint8_t *bytes, uint64_t i)
+{
+	uint8_t		rel_size = (state->flags >> REL_SHIFT) & 0b111;
+	uint64_t	addr;
+
+	switch (rel_size) {
+		case (1):
+			state->rel8 = *(int8_t *)&bytes[i];
+			i += rel_size;
+			addr = i + state->rel8;
+			break ;
+		case (2):
+			state->rel16 = *(int16_t *)&bytes[i];
+			i += rel_size;
+			addr = i + state->rel16;
+			break ;
+		case (4):
+			state->rel32 = *(int32_t *)&bytes[i];
+			i += rel_size;
+			addr = i + state->rel32;
+			break ;
+		default:
+			return (SIZE_MAX);
+	}
+	snprintf(state->operand_bufs[OPERAND_REL], BUF_SIZE, "\e[36m%zx", addr);
+	return (i);
+}
+
 uint64_t	parse_disp_value(t_state *state, uint8_t *bytes, uint64_t i)
 {
-	uint8_t	disp_size = (state->flags >> 11) & 0b1111;
+	uint8_t	disp_size = (state->flags >> DISP_SHIFT) & 0b1111;
 	char	buf[BUF_SIZE];
 	bool	negative = 0;
 
@@ -172,7 +200,7 @@ uint64_t	parse_disp_value(t_state *state, uint8_t *bytes, uint64_t i)
 				negative = 1;
 				state->disp8 *= -1;
 			}
-			snprintf(buf, BUF_SIZE, "$%#02x", state->disp8);
+			snprintf(buf, BUF_SIZE, "$0x%x", state->disp8);
 			i++;
 			break ;
 		case (2):
@@ -182,7 +210,7 @@ uint64_t	parse_disp_value(t_state *state, uint8_t *bytes, uint64_t i)
 				negative = 1;
 				state->disp16 *= -1;
 			}
-			snprintf(buf, BUF_SIZE, "$%#02x", state->disp16);
+			snprintf(buf, BUF_SIZE, "$0x%x", state->disp16);
 			i += 2;
 			break ;
 		case (4):
@@ -192,7 +220,7 @@ uint64_t	parse_disp_value(t_state *state, uint8_t *bytes, uint64_t i)
 				negative = 1;
 				state->disp32 *= -1;
 			}
-			snprintf(buf, BUF_SIZE, "$%#02x", state->disp32);
+			snprintf(buf, BUF_SIZE, "$0x%x", state->disp32);
 			i += 4;
 			break ;
 		case (8):
@@ -202,7 +230,7 @@ uint64_t	parse_disp_value(t_state *state, uint8_t *bytes, uint64_t i)
 				negative = 1;
 				state->disp64 *= -1;
 			}
-			snprintf(buf, BUF_SIZE, "$%#02zx", state->disp64);
+			snprintf(buf, BUF_SIZE, "$0x%zx", state->disp64);
 			i += 8;
 			break ;
 		default:
@@ -216,26 +244,24 @@ uint64_t	parse_disp_value(t_state *state, uint8_t *bytes, uint64_t i)
 	return (i);
 }
 
-
-
 uint64_t	parse_imm_value(t_state *state, uint8_t *bytes, uint64_t i)
 {
-	uint8_t	imm_size = (state->flags >> 7) & 0b1111;
+	uint8_t	imm_size = (state->flags >> IMM_SHIFT) & 0b1111;
 
 	switch (imm_size) {
 		case (1):
 			state->imm8 = *(int8_t *)&bytes[i];
-			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "\e[31m$0x%02x", state->imm8);
+			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "\e[31m$0x%x", state->imm8);
 			i++;
 			break ;
 		case (2):
 			state->imm16 = *(int16_t *)&bytes[i];
-			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "\e[31m$0x%02x", state->imm16);
+			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "\e[31m$0x%x", state->imm16);
 			i += 2;
 			break ;
 		case (4):
 			state->imm32 = *(int32_t *)&bytes[i];
-			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "\e[31m$0x%02x", state->imm32);
+			snprintf(state->operand_bufs[OPERAND_IMM], BUF_SIZE, "\e[31m$0x%x", state->imm32);
 			i += 4;
 			break ;
 		case (8):
@@ -252,14 +278,81 @@ uint64_t	parse_imm_value(t_state *state, uint8_t *bytes, uint64_t i)
 
 void	parse_sib_byte(t_state *state, uint8_t byte)
 {
-	(void)state;
-	(void)byte;
+	uint8_t		mod = (byte >> 6) & 0b11;
+	uint8_t		index = (byte >> 3) & 0b111;
+	uint8_t		base = (byte >> 0) & 0b111;
+	uint8_t		scale;
+	const char	*index_str = NULL;
+	const char	*base_str = NULL;
+	const char	*empty = "";
+
+	switch (mod) {
+		case (0b00):
+			scale = 1;
+			break ;
+		case (0b01):
+			scale = 2;
+			break ;
+		case (0b10):
+			scale = 4;
+			break ;
+		case (0b11):
+			scale = 8;
+			break ;
+		default:
+			return ;
+	}
+
+	if (state->flags & REX_X)
+		index |= 0b1000;
+	if (state->flags & REX_B)
+		base |= 0b1000;
+
+	if (index == 0b100)
+		index_str = empty;
+	else
+		index_str = reg64[index];
+
+	if ((base & 0b111) == 0b101)
+	{
+		switch (mod) {
+			case (0b00):
+				state->flags |= DISP_32;
+				base_str = empty;
+				break ;
+			case (0b01):
+				state->flags |= DISP_8;
+				base_str = reg64[base];
+				break ;
+			case (0b10):
+				state->flags |= DISP_32;
+				base_str = reg64[base];
+				break ;
+			default:
+				break ;
+		}
+	}
+	else
+		base_str = reg64[base];
+	if (!(base_str == empty && index_str == empty))
+		snprintf(state->operand_bufs[OPERAND_RM], BUF_SIZE, "\e[33m(%s,%s,%d)", base_str, index_str, scale);
 }
 
 uint64_t	parse_prefix_bytes(t_state *state, uint8_t *data, uint64_t i)
 {
-	if (is_rex_byte(data[i]))
-		parse_rex_byte(state, data[i++]);
+	bool	is_prefix = false;
+
+	do {
+		is_prefix = true;
+		if (is_rex_byte(data[i]))
+			parse_rex_byte(state, data[i++]);
+		else if (data[i] == 0x66)
+			i++;
+		else if (data[i] == 0x2e)
+			i++;
+		else
+			is_prefix = 0;
+	} while (is_prefix == 1);
 
 	return (i);
 }
@@ -340,6 +433,8 @@ int	print_disassembly(int fd, uint8_t *data, uint64_t start, uint64_t size)
 			parse_modrm_byte(&state, data[i++]);
 		if (state.flags & SIB)
 			parse_sib_byte(&state, data[i++]);
+		if (state.flags & REL_MASK)
+			i = parse_rel_value(&state, data, i);
 		if (state.flags & DISP_MASK)
 			i = parse_disp_value(&state, data, i);
 		if (state.flags & IMM_MASK)
