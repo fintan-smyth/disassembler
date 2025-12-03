@@ -95,4 +95,6 @@ int	main(void)
 	//
 	// printf("\nINIT_BYTECOLS:\n");
 	// print_disassembly(1, data, 0x2cd0, 300);
+	
+	free(data);
 }
